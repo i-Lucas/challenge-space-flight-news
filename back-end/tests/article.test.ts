@@ -70,14 +70,14 @@ describe("testing route to create a new article", () => {
 
   it("it should be possible to create a new article", async () => {
     const res = await supertest(app).post("/articles").send(articleFactory.createArticle());
-    expect(res.status).toBe(201);
+    expect(res.status).toEqual(201);
   });
 
   it("it should be possible to search for the created article", async () => {
     const res = await supertest(app).get("/articles/").send({ "skip": 0, "take": 1 });
 
     const orderByIdDesc = res.body[0];
-    expect(orderByIdDesc.title).toBe(articleFactory.createArticle().title);
+    expect(orderByIdDesc.title).toEqual(articleFactory.createArticle().title);
     expect(orderByIdDesc.imageUrl).toContain(articleFactory.createArticle().imageUrl);
   });
 
@@ -88,7 +88,7 @@ describe("testing route to create a new article", () => {
 
     const res = await supertest(app).post("/articles").send(invalidArticle);
     expect(res.text).toEqual("\"title\" is required");
-    expect(res.status).toBe(422);
+    expect(res.status).toEqual(422);
   });
 
   it("should generate an error if the parameters are invalid", async () => {
@@ -98,7 +98,7 @@ describe("testing route to create a new article", () => {
 
     const res = await supertest(app).post("/articles").send(invalidArticle);
     expect(res.text).toEqual("\"imageUrl\" is required");
-    expect(res.status).toBe(422);
+    expect(res.status).toEqual(422);
   });
 
 });
