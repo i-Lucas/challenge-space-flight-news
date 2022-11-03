@@ -9,8 +9,12 @@ async function findAllArticles(): Promise<articles[]> {
   });
 };
 
-async function registerArticles(data: articles[]) {
+async function registerArticles(data: Omit<articles[], "id">) {
   await prisma.articles.createMany({ data });
+};
+
+async function registerArticle(data: Omit<articles, "id">) {
+  await prisma.articles.create({ data });
 };
 
 async function getArticleById(id: number): Promise<articles> {
@@ -34,6 +38,7 @@ async function getArticlesByPagination(skip: number, take: number) {
 const articlesRepository = {
   findAllArticles,
   registerArticles,
+  registerArticle,
   getArticleById,
   getArticlesByPagination
 };

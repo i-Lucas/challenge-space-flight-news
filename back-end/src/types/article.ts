@@ -1,4 +1,4 @@
-type Article = {
+export type Article = {
 
   id: number,
   title: string,
@@ -9,5 +9,3 @@ type Article = {
   publishedAt: string,
   updatedAt: string,
 };
-
-export default Article;

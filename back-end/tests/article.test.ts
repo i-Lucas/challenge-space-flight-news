@@ -3,8 +3,8 @@ import pkg from "@prisma/client";
 import supertest from "supertest";
 import app from "../src/app.js";
 
-import Article from "../src/types/article.js";
-import makeArticle from "./factory/articles.js";
+import { Article } from "../src/types/article.js";
+import articleFactory from "./factory/articles.js";
 import articlesApi from "../src/api/newsapi.js";
 import articlesRepository from "../src/repositories/articles.js";
 
@@ -18,13 +18,13 @@ describe("testing API data fetch", () => {
   });
 
   it("should register a new article", async () => {
-    await articlesRepository.registerArticles(makeArticle());
-    const newArticle = await articlesRepository.getArticleById(makeArticle()[0].id);
-    expect(newArticle).toMatchObject(makeArticle()[0]);
+    await articlesRepository.registerArticles(articleFactory.makeArticle());
+    const newArticle = await articlesRepository.getArticleById(articleFactory.makeArticle()[0].id);
+    expect(newArticle).toMatchObject(articleFactory.makeArticle()[0]);
   });
 
   it("it should be possible to search for the article created above", async () => {
-    const shouldbe = makeArticle();
+    const shouldbe = articleFactory.makeArticle();
     const result = await articlesRepository.findAllArticles();
     expect(result).toEqual(expect.arrayContaining(shouldbe));
     expect(result).toHaveLength(2);
@@ -41,16 +41,16 @@ describe("testing route /articles", () => {
 
   it("should return an error when trying to search for articles without valid parameters", async () => {
     const res = await supertest(app).get("/articles").send({ "skip": "aa", "take": "bb" });
-    expect(res.status).toEqual(400);
-    expect(res.text).toEqual("invalid parameters");
+    expect(res.status).toEqual(422);
+    expect(res.text).toEqual(`\"skip\" must be a number`);
   });
 });
 
 describe("testing route get article by id", () => {
 
   it("it should be possible to search for an article by id", async () => {
-    const res = await supertest(app).get("/articles/" + makeArticle()[0].id).send();
-    expect(res.body).toEqual(makeArticle()[0]);
+    const res = await supertest(app).get("/articles/" + articleFactory.makeArticle()[0].id).send();
+    expect(res.body).toEqual(articleFactory.makeArticle()[0]);
   });
 
   it("should return a 404 error if the article does not exist", async () => {
@@ -64,6 +64,43 @@ describe("testing route get article by id", () => {
     expect(res.status).toEqual(400);
     expect(res.text).toEqual("invalid parameters");
   });
+});
+
+describe("testing route to create a new article", () => {
+
+  it("it should be possible to create a new article", async () => {
+    const res = await supertest(app).post("/articles").send(articleFactory.createArticle());
+    expect(res.status).toBe(201);
+  });
+
+  it("it should be possible to search for the created article", async () => {
+    const res = await supertest(app).get("/articles/").send({ "skip": 0, "take": 1 });
+
+    const orderByIdDesc = res.body[0];
+    expect(orderByIdDesc.title).toBe(articleFactory.createArticle().title);
+    expect(orderByIdDesc.imageUrl).toContain(articleFactory.createArticle().imageUrl);
+  });
+
+  it("should generate an error if the parameters are invalid", async () => {
+
+    const invalidArticle = articleFactory.createArticle();
+    delete invalidArticle.title;
+
+    const res = await supertest(app).post("/articles").send(invalidArticle);
+    expect(res.text).toEqual("\"title\" is required");
+    expect(res.status).toBe(422);
+  });
+
+  it("should generate an error if the parameters are invalid", async () => {
+
+    const invalidArticle = articleFactory.createArticle();
+    delete invalidArticle.imageUrl;
+
+    const res = await supertest(app).post("/articles").send(invalidArticle);
+    expect(res.text).toEqual("\"imageUrl\" is required");
+    expect(res.status).toBe(422);
+  });
+
 });
 
 afterAll(async () => {

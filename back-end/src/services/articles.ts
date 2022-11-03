@@ -1,6 +1,6 @@
 import { articles } from "@prisma/client";
 import articlesRepository from "../repositories/articles.js";
-import Article from "../types/article.js";
+import { Article } from "../types/article.js";
 
 async function updateDatabase(data: Article[]) {
 
@@ -8,7 +8,7 @@ async function updateDatabase(data: Article[]) {
     .map((article: Article, index: number) => {
 
       return {
-        id: index,
+        // id: index,
         title: article.title,
         url: article.url,
         imageUrl: article.imageUrl,
@@ -44,8 +44,12 @@ async function saveArticles(articles: Article[]) {
 
 async function sendArticles(skip: number, take: number) {
 
+  if (typeof skip === "string" || typeof take === "string")
+    throw { status: 400, message: "properties must be of type number" };
+
   if (!isNum(skip.toString()) || !isNum(take.toString()))
     throw { status: 400, message: "invalid parameters" };
+
   return await articlesRepository.getArticlesByPagination(skip, take);
 };
 
@@ -57,13 +61,18 @@ async function getArticleById(id: number): Promise<Article> {
   else return article;
 };
 
+async function createNewArticle(article: Omit<Article, "id">) {
+  await articlesRepository.registerArticle(article);
+};
+
 const isNum = (str: string): Boolean => /^[0-9]+$/.test(str);
 
 const articleServices = {
   processArticles,
   updateDatabase,
   sendArticles,
-  getArticleById
+  getArticleById,
+  createNewArticle
 };
 
 export default articleServices;
