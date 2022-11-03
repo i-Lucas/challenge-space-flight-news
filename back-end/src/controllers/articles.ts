@@ -51,11 +51,21 @@ async function editArticle(req: Request, res: Response) {
   res.sendStatus(200);
 };
 
+async function deleteArticle(req: Request, res: Response) {
+
+  const { id } = req.params;
+  if (!id) throw { status: 400, message: "'id' parameter is required" };
+
+  await articleServices.deleteArticle(parseInt(id));
+  res.sendStatus(200);
+};
+
 const articlesController = {
   getArticles,
   getArticleById,
   newArticle,
-  editArticle
+  editArticle,
+  deleteArticle
 };
 
 export default articlesController;

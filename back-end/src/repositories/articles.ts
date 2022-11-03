@@ -47,13 +47,23 @@ async function updateArticle(data: articles) {
   })
 };
 
+async function deleteArticle(id: number) {
+
+  await prisma.articles.delete({
+    where: {
+      id
+    }
+  })
+};
+
 const articlesRepository = {
   findAllArticles,
   registerArticles,
   registerArticle,
   getArticleById,
   getArticlesByPagination,
-  updateArticle
+  updateArticle,
+  deleteArticle
 };
 
 export default articlesRepository;

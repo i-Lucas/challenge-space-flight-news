@@ -71,6 +71,16 @@ async function updateArticle(data: articles) {
   await articlesRepository.updateArticle(data);
 };
 
+async function deleteArticle(id: number) {
+
+  if (!isNum(id.toString())) throw { status: 400, message: "invalid parameters" };
+
+  const article = await articlesRepository.getArticleById(id);
+  if (!article) throw { status: 404, message: "Article not found" };
+
+  await articlesRepository.deleteArticle(id);
+};
+
 const isNum = (str: string): Boolean => /^[0-9]+$/.test(str);
 
 const articleServices = {
@@ -79,7 +89,8 @@ const articleServices = {
   sendArticles,
   getArticleById,
   createNewArticle,
-  updateArticle
+  updateArticle,
+  deleteArticle
 };
 
 export default articleServices;

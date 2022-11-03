@@ -130,6 +130,26 @@ describe("testing route to update articles put/articles", () => {
   });
 });
 
+describe("testing the delete route", () => {
+
+  it("it should be possible to delete an article by id", async () => {
+    const res = await supertest(app).delete("/article/1").send();
+    expect(res.status).toEqual(200);
+  });
+
+  it("should return an error when trying to delete an article that does not exist", async () => {
+    const res = await supertest(app).delete("/article/99").send();
+    expect(res.status).toEqual(404);
+    expect(res.text).toEqual("Article not found");
+  });
+
+  it("should return an error when trying to delete an article with invalid parameters", async () => {
+    const res = await supertest(app).delete("/article/aa").send();
+    expect(res.status).toEqual(400);
+    expect(res.text).toEqual("invalid parameters");
+  })
+});
+
 afterAll(async () => {
 
   const { PrismaClient } = pkg;
