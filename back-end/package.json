@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "dotenv -e .env.development nodemon src/index.ts",
-    "test": "npm run db:test && dotenv -e .env.test jest -- -i",
+    "test": "npm run db:test && NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest  -- -i",
     "db:dev": "dotenv -e .env.development npx prisma migrate dev",
     "db:test": "dotenv -e .env.test npx prisma migrate dev"
   },
