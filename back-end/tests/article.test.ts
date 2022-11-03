@@ -28,25 +28,42 @@ describe("testing API data fetch", () => {
     expect(result).toEqual(expect.arrayContaining(shouldbe));
     expect(result).toHaveLength(2);
   });
-
 });
 
 describe("testing route /articles", () => {
 
   it("it should be possible to search for articles according to a range", async () => {
     const res = await supertest(app).get("/articles").send({ "skip": 0, "take": 1 });
-
     expect(res.status).toEqual(200);
     expect(res.body).toHaveLength(1);
   });
 
   it("should return an error when trying to search for articles without valid parameters", async () => {
     const res = await supertest(app).get("/articles").send({ "skip": "aa", "take": "bb" });
-
     expect(res.status).toEqual(400);
     expect(res.text).toEqual("invalid parameters");
-  })
-})
+  });
+});
+
+describe("testing route get article by id", () => {
+
+  it("it should be possible to search for an article by id", async () => {
+    const res = await supertest(app).get("/articles/" + makeArticle()[0].id).send();
+    expect(res.body).toEqual(makeArticle()[0]);
+  });
+
+  it("should return a 404 error if the article does not exist", async () => {
+    const res = await supertest(app).get("/articles/90").send();
+    expect(res.status).toEqual(404);
+    expect(res.text).toEqual("Article not found");
+  });
+
+  it("should return an error if the id is invalid", async () => {
+    const res = await supertest(app).get("/articles/aa").send();
+    expect(res.status).toEqual(400);
+    expect(res.text).toEqual("invalid parameters");
+  });
+});
 
 afterAll(async () => {
 
