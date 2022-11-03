@@ -1,11 +1,11 @@
-import Article from "../../src/types/article";
+import { Article } from "../../src/types/article";
 // faker ?
 
-export default function makeArticle(): Article[] {
+function makeArticle(): Article[] {
 
   return [{
 
-    id: 558959999,
+    id: 1,
     title: "string",
     url: "string",
     imageUrl: "string",
@@ -15,7 +15,7 @@ export default function makeArticle(): Article[] {
     updatedAt: "string",
   },
   {
-    id: 558959993,
+    id: 2,
     title: "string",
     url: "string",
     imageUrl: "string",
@@ -23,6 +23,25 @@ export default function makeArticle(): Article[] {
     summary: "string",
     publishedAt: "string",
     updatedAt: "string",
-    
+
   }];
 };
+
+function createArticle() {
+
+  return {
+    "title": "lucas",
+    "url": "https://www.google.com.br",
+    "imageUrl": "http://www.google.com.br",
+    "newsSite": "http://www.google.com",
+    "summary": "ffasdasdasdasdasd"
+  };
+
+};
+
+const articleFactory = {
+  makeArticle,
+  createArticle
+};
+
+export default articleFactory;
