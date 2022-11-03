@@ -49,12 +49,21 @@ async function sendArticles(skip: number, take: number) {
   return await articlesRepository.getArticlesByPagination(skip, take);
 };
 
+async function getArticleById(id: number): Promise<Article> {
+
+  if (!isNum(id.toString())) throw { status: 400, message: "invalid parameters" };
+  const article = await articlesRepository.getArticleById(id);
+  if (!article) throw { status: 404, message: "Article not found" };
+  else return article;
+};
+
 const isNum = (str: string): Boolean => /^[0-9]+$/.test(str);
 
 const articleServices = {
   processArticles,
   updateDatabase,
-  sendArticles
+  sendArticles,
+  getArticleById
 };
 
 export default articleServices;
