@@ -1,0 +1,20 @@
+services:
+
+  postgres_container:
+    image: postgres
+    container_name: postgres_container
+    restart: always
+    ports:
+      - 4457:5432
+    env_file:
+      - back-end/.env.docker.test
+
+  node_container:
+    container_name: node_container
+    build: ./back-end
+    ports:
+      - 5000:5000
+    depends_on:
+      - postgres_container
+    env_file:
+      - back-end/.env.docker.test
