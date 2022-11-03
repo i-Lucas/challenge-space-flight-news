@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
+import { articles } from '@prisma/client';
 import pkg from "@prisma/client";
 import supertest from "supertest";
 import app from "../src/app.js";
 
-import { Article } from "../src/types/article.js";
 import articleFactory from "./factory/articles.js";
 import articlesApi from "../src/api/newsapi.js";
 import articlesRepository from "../src/repositories/articles.js";
@@ -12,7 +12,7 @@ describe("testing API data fetch", () => {
 
   it("should return a list of articles", async () => {
     jest.mock("../src/api/newsapi.js");
-    jest.spyOn(articlesApi, "getAllArticles").mockImplementation(async () => <Article[]>[])
+    jest.spyOn(articlesApi, "getAllArticles").mockImplementation(async () => <articles[]>[])
     await articlesApi.getAllArticles(1);
     expect(articlesApi.getAllArticles).toBeCalled();
   });
@@ -101,6 +101,33 @@ describe("testing route to create a new article", () => {
     expect(res.status).toEqual(422);
   });
 
+});
+
+describe("testing route to update articles put/articles", () => {
+
+  it("it should be possible to update an article", async () => {
+    const res = await supertest(app).put("/articles/1").send(articleFactory.updateArticle());
+    expect(res.status).toEqual(200);
+
+    const verify = await supertest(app).get("/articles/1").send();
+    expect(verify.body.summary).toEqual(articleFactory.updateArticle().summary);
+  });
+
+  it("it should give an error when trying to update an article that doesn't exist", async () => {
+    const res = await supertest(app).put("/articles/99").send(articleFactory.updateArticle());
+    expect(res.status).toEqual(404);
+    expect(res.text).toEqual("Article not found");
+  });
+
+  it("should give an error when trying to update an article with invalid properties", async () => {
+
+    const invalid = articleFactory.updateArticle();
+    delete invalid.newsSite;
+
+    const res = await supertest(app).put("/articles/1").send(invalid);
+    expect(res.text).toEqual("\"newsSite\" is required");
+    expect(res.status).toEqual(422);
+  });
 });
 
 afterAll(async () => {

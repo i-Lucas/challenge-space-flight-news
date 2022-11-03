@@ -33,10 +33,29 @@ async function newArticle(req: Request, res: Response) {
   res.sendStatus(201);
 };
 
+async function editArticle(req: Request, res: Response) {
+
+  const { id } = req.params;
+
+  const data: {
+    title: string,
+    url: string,
+    imageUrl: string,
+    newsSite: string,
+    summary: string,
+    publishedAt: string
+  } = req.body;
+
+  const updatedAt = formatter.formated();
+  await articleServices.updateArticle({ ...data, id: parseInt(id), updatedAt });
+  res.sendStatus(200);
+};
+
 const articlesController = {
   getArticles,
   getArticleById,
-  newArticle
+  newArticle,
+  editArticle
 };
 
 export default articlesController;

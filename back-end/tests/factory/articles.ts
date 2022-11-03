@@ -1,7 +1,7 @@
-import { Article } from "../../src/types/article";
+import { articles } from "@prisma/client";
 // faker ?
 
-function makeArticle(): Article[] {
+function makeArticle(): articles[] {
 
   return [{
 
@@ -39,9 +39,20 @@ function createArticle() {
 
 };
 
+function updateArticle() {
+  return {
+    "title": "novo título atualizado ... hehehe",
+    "url": "https://www.atualizei.com",
+    "imageUrl": "https://www.euamoprogramar.com",
+    "newsSite": "http://github.com",
+    "summary": "Quando o Papai Noel morrer, ele não estará mais em trenós."
+  }
+}
+
 const articleFactory = {
   makeArticle,
-  createArticle
+  createArticle,
+  updateArticle
 };
 
 export default articleFactory;

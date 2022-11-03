@@ -35,12 +35,25 @@ async function getArticlesByPagination(skip: number, take: number) {
   })
 };
 
+async function updateArticle(data: articles) {
+
+  await prisma.articles.update({
+    where: {
+      id: data.id
+    },
+    data: {
+      ...data
+    }
+  })
+};
+
 const articlesRepository = {
   findAllArticles,
   registerArticles,
   registerArticle,
   getArticleById,
-  getArticlesByPagination
+  getArticlesByPagination,
+  updateArticle
 };
 
 export default articlesRepository;

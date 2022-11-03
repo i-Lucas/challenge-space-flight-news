@@ -1,14 +1,12 @@
 import { articles } from "@prisma/client";
 import articlesRepository from "../repositories/articles.js";
-import { Article } from "../types/article.js";
 
-async function updateDatabase(data: Article[]) {
+async function updateDatabase(data: articles[]) {
 
   const filtered = JSON.parse(JSON.stringify(data))
-    .map((article: Article, index: number) => {
+    .map((article: articles, index: number) => {
 
       return {
-        // id: index,
         title: article.title,
         url: article.url,
         imageUrl: article.imageUrl,
@@ -22,7 +20,7 @@ async function updateDatabase(data: Article[]) {
   await processArticles(filtered);
 };
 
-async function processArticles(articles: Article[]) {
+async function processArticles(articles: articles[]) {
 
   const dbList = await articlesRepository.findAllArticles();
 
@@ -37,7 +35,7 @@ function findNewArticles(dbList: articles[], list: articles[]): articles[] {
   return list.filter((article, index) => !dbList[index] && list[index]);
 };
 
-async function saveArticles(articles: Article[]) {
+async function saveArticles(articles: articles[]) {
   console.log(articles.length + " new articles found");
   await articlesRepository.registerArticles(articles);
 };
@@ -53,7 +51,7 @@ async function sendArticles(skip: number, take: number) {
   return await articlesRepository.getArticlesByPagination(skip, take);
 };
 
-async function getArticleById(id: number): Promise<Article> {
+async function getArticleById(id: number): Promise<articles> {
 
   if (!isNum(id.toString())) throw { status: 400, message: "invalid parameters" };
   const article = await articlesRepository.getArticleById(id);
@@ -61,8 +59,16 @@ async function getArticleById(id: number): Promise<Article> {
   else return article;
 };
 
-async function createNewArticle(article: Omit<Article, "id">) {
+async function createNewArticle(article: Omit<articles, "id">) {
   await articlesRepository.registerArticle(article);
+};
+
+async function updateArticle(data: articles) {
+
+  const article = await articlesRepository.getArticleById(data.id);
+  if (!article) throw { status: 404, message: "Article not found" };
+
+  await articlesRepository.updateArticle(data);
 };
 
 const isNum = (str: string): Boolean => /^[0-9]+$/.test(str);
@@ -72,7 +78,8 @@ const articleServices = {
   updateDatabase,
   sendArticles,
   getArticleById,
-  createNewArticle
+  createNewArticle,
+  updateArticle
 };
 
 export default articleServices;
