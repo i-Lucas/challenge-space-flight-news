@@ -12,14 +12,8 @@ const newArticle = joi.object<Omit<articles, "id">>({
   summary: joi.string().min(15).required()
 });
 
-const getArticles = joi.object({
-  skip: joi.number().integer().required(),
-  take: joi.number().required()
-});
-
 const articleSchema = {
-  newArticle,
-  getArticles
+  newArticle
 };
 
 export default articleSchema;

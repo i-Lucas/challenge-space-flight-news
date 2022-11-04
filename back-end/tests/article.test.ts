@@ -34,15 +34,15 @@ describe("testing API data fetch", () => {
 describe("testing route /articles", () => {
 
   it("it should be possible to search for articles according to a range", async () => {
-    const res = await supertest(app).get("/articles").send({ "skip": 0, "take": 1 });
+    const res = await supertest(app).get("/articles").set({ skip: "0", take: "1" })
     expect(res.status).toEqual(200);
     expect(res.body).toHaveLength(1);
   });
 
   it("should return an error when trying to search for articles without valid parameters", async () => {
-    const res = await supertest(app).get("/articles").send({ "skip": "aa", "take": "bb" });
-    expect(res.status).toEqual(422);
-    expect(res.text).toEqual(`\"skip\" must be a number`);
+    const res = await supertest(app).get("/articles").set({ "skip": "aa", "take": "bb" });
+    expect(res.status).toEqual(400);
+    expect(res.text).toEqual("invalid parameters");
   });
 });
 
@@ -74,7 +74,7 @@ describe("testing route to create a new article", () => {
   });
 
   it("it should be possible to search for the created article", async () => {
-    const res = await supertest(app).get("/articles/").send({ "skip": 0, "take": 1 });
+    const res = await supertest(app).get("/articles/").set({ skip: "0", take: "1" });
 
     const orderByIdDesc = res.body[0];
     expect(orderByIdDesc.title).toEqual(articleFactory.createArticle().title);

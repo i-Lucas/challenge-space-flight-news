@@ -40,15 +40,12 @@ async function saveArticles(articles: articles[]) {
   await articlesRepository.registerArticles(articles);
 };
 
-async function sendArticles(skip: number, take: number) {
+async function sendArticles(skip: string, take: string) {
 
-  if (typeof skip === "string" || typeof take === "string")
-    throw { status: 400, message: "properties must be of type number" };
-
-  if (!isNum(skip.toString()) || !isNum(take.toString()))
+  if (!isNum(skip) || !isNum(take))
     throw { status: 400, message: "invalid parameters" };
 
-  return await articlesRepository.getArticlesByPagination(skip, take);
+  return await articlesRepository.getArticlesByPagination(parseInt(skip), parseInt(take));
 };
 
 async function getArticleById(id: number): Promise<articles> {

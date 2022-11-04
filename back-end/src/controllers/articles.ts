@@ -4,8 +4,11 @@ import formatter from "../tools/dateFormatter.js";
 
 async function getArticles(req: Request, res: Response) {
 
-  const { skip, take } = req.body;
-  const result = await articleServices.sendArticles(skip, take);
+  const skip = req.headers.skip;
+  const take = req.headers.take;
+
+  if (!skip || !take) throw { status: 400, message: "invalid parameters" };
+  const result = await articleServices.sendArticles(skip.toString(), take.toString());
   res.status(200).json(result);
 };
 
