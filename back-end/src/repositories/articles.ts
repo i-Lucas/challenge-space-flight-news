@@ -30,7 +30,7 @@ async function getArticlesByPagination(skip: number, take: number) {
     skip,
     take,
     orderBy: {
-      id: "desc"
+      id: "asc"
     }
   })
 };
