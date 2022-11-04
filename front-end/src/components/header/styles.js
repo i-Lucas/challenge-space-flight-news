@@ -52,7 +52,7 @@ export const Icon = styled.div`
   width: 10%;
   height: 90%;
   cursor: pointer;
-  margin-left: -38px;
+  margin-left: -12%;
   background-color: #4b5c6b;
 
   display: flex;
@@ -65,7 +65,6 @@ export const Icon = styled.div`
   }
 
   @media screen and (max-width: 768px) {
-    margin-left: -25px;
     height: 80%;
   }
 `;
