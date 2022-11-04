@@ -52,7 +52,7 @@ export const Icon = styled.div`
   width: 10%;
   height: 90%;
   cursor: pointer;
-  margin-left: -12%;
+  margin-left: -10.8%;
   background-color: #4b5c6b;
 
   display: flex;
@@ -66,6 +66,7 @@ export const Icon = styled.div`
 
   @media screen and (max-width: 768px) {
     height: 80%;
+    margin-left: -11.5%;
   }
 `;
 
@@ -82,7 +83,7 @@ export const Select = styled.select`
 export const Image = styled.div`
 
   width: 15%;
-  height: 45%;
+  height: 48%;
   margin: 2% auto;
   border-radius: 100%;
 
@@ -110,6 +111,9 @@ export const Title = styled.section`
   text-align: center;
 
   h1 {
-    font-size: 25px;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: bold;
+    font-size: 30px;
+    color: #302e53;
   }
 `;
