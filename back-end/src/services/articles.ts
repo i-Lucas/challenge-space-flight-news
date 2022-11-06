@@ -78,7 +78,7 @@ async function deleteArticle(id: number) {
   await articlesRepository.deleteArticle(id);
 };
 
-const isNum = (str: string): Boolean => /^[0-9]+$/.test(str);
+export const isNum = (str: string): Boolean => /^[0-9]+$/.test(str);
 
 const articleServices = {
   processArticles,

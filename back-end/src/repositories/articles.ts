@@ -1,4 +1,4 @@
-import { articles } from "@prisma/client";
+import { articles, Prisma } from "@prisma/client";
 import prisma from "../config/db.js";
 
 async function findAllArticles(): Promise<articles[]> {
@@ -25,7 +25,7 @@ async function getArticleById(id: number): Promise<articles> {
   })
 };
 
-async function getArticlesByPagination(skip: number, take: number) {
+async function getArticlesByPagination(skip: number, take: number): Promise<articles[]> {
   return await prisma.articles.findMany({
     skip,
     take,
@@ -56,6 +56,43 @@ async function deleteArticle(id: number) {
   })
 };
 
+// fixme ?
+async function searchArticleTitleByContent(content: string): Promise<articles[]> {
+
+  return await prisma.articles.findMany({
+    where: {
+      title: {
+        contains: content
+      },/*
+      summary: {
+        contains: content // it doesn't work that way
+      },*/
+    }
+  })
+};
+// fixme ?
+async function searchArticleSummaryByContent(content: string): Promise<articles[]> {
+
+  return await prisma.articles.findMany({
+    where: {
+      summary: {
+        contains: content
+      }
+    }
+  })
+};
+
+async function sortSearch(skip: number, take: number, order: Prisma.SortOrder): Promise<articles[]> {
+
+  return await prisma.articles.findMany({
+    skip,
+    take,
+    orderBy: {
+      publishedAt: order
+    }
+  })
+};
+
 const articlesRepository = {
   findAllArticles,
   registerArticles,
@@ -63,7 +100,10 @@ const articlesRepository = {
   getArticleById,
   getArticlesByPagination,
   updateArticle,
-  deleteArticle
+  deleteArticle,
+  searchArticleTitleByContent,
+  searchArticleSummaryByContent,
+  sortSearch
 };
 
 export default articlesRepository;

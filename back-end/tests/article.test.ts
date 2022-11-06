@@ -74,11 +74,11 @@ describe("testing route to create a new article", () => {
   });
 
   it("it should be possible to search for the created article", async () => {
-    const res = await supertest(app).get("/articles/").set({ skip: "0", take: "1" });
+    const res = await supertest(app).get("/articles/").set({ skip: "0", take: "3" });
+    const orderByIdAsc = res.body[2];
 
-    const orderByIdDesc = res.body[0];
-    expect(orderByIdDesc.title).toEqual(articleFactory.createArticle().title);
-    expect(orderByIdDesc.imageUrl).toContain(articleFactory.createArticle().imageUrl);
+    expect(orderByIdAsc.title).toEqual(articleFactory.createArticle().title);
+    expect(orderByIdAsc.imageUrl).toContain(articleFactory.createArticle().imageUrl);
   });
 
   it("should generate an error if the parameters are invalid", async () => {
